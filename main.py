@@ -37,6 +37,18 @@ def post_pais():
     return jsonify(novo_pais)
 
 
+@app.route('/pais/<string:sigla>', methods=['PUT'])
+def put_pais_by_nome(sigla):
+    requisicao = request.get_json()
+    for pais in paises:
+        if pais['sigla'].lower() == sigla.lower():
+            pais['nome'] = requisicao['nome']
+            pais['sigla'] = requisicao['sigla']
+            pais['continente'] = requisicao['continente']
+            return jsonify({'país alterado': pais['nome']})
+    return jsonify({'mensagem': 'País de sigla -' + sigla + '- nao encontrado'})
+
+
 @app.route('/pais/<string:sigla>')
 def get_pais_by_sigla(sigla):
     for pais in paises:
