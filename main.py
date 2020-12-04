@@ -6,7 +6,12 @@ paises = [
     {
         'nome': 'Brasil',
         'sigla': 'BRA',
-        'continente': 'América'
+        'continente': 'América do Sul'
+    },
+    {
+        'nome': 'Estados Unidos',
+        'sigla': 'EUA',
+        'continente': 'América do Norte'
     }
 ]
 
@@ -19,6 +24,10 @@ def get_paises():
 @app.route('/pais', methods=['POST'])
 def post_pais():
     requisicao = request.get_json()
+    for pais in paises:
+        if pais['nome'].lower() == requisicao['nome'].lower():
+            return jsonify({'mensagem': 'País já cadastrado'})
+
     novo_pais = {
         'nome': requisicao['nome'],
         'sigla': requisicao['sigla'],
@@ -34,6 +43,15 @@ def get_pais_by_sigla(sigla):
         if pais['sigla'].lower() == sigla.lower():
             return jsonify(pais)
     return jsonify({'mensagem': 'País de sigla -' + sigla + '- nao encontrado'})
+
+
+@app.route('/pais/<string:nome>', methods=['DELETE'])
+def delete_pais_by_nome(nome):
+    for pais in paises:
+        if pais['nome'].lower() == nome.lower():
+            paises.remove(pais)
+            return jsonify({'mensagem': 'País deletado com sucesso'})
+    return jsonify({'mensagem': 'País de nome -' + nome + '- nao encontrado'})
 
 
 app.run()
